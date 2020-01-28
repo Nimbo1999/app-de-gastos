@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './models/transaction.dart';
 import './widgets/transaction_list.dart';
 import './widgets/card_inputs.dart';
 import './widgets/chart.dart';
 
-void main() => runApp(App());
+void main() {
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
+  runApp(App());
+}
 
 class App extends StatelessWidget {
   @override
@@ -53,6 +60,11 @@ class _HomeAppState extends State<HomeApp> {
    * Essa lista é responsável por segurar todas as transações.
    */
   final List<Transaction> _userTransactions = [];
+
+  /**
+   * Boolean que define se o card aparece ou não no dispositivo.
+   */
+  bool _showChart = false;
 
   /**
    * Esse método get retorna as transações mais recente de 7 dias atraz.
@@ -115,22 +127,53 @@ class _HomeAppState extends State<HomeApp> {
 
   @override
   Widget build(BuildContext context){
+    final bool _isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final appBar = AppBar(
+      title: Text('Gerenciador de Gastos'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _showTransactionModal(context),
+        )
+      ],
+    );
+    final txListWidget = Container(
+      height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top)
+      * 0.7,
+      child: TransactionList(_userTransactions, _deleteTransaction)
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gerenciador de Gastos'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _showTransactionModal(context),
-          )
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_userTransactions, _deleteTransaction),
+            if (_isLandscape) Row(
+              children: <Widget>[
+                Text('Show Chart'),
+                Switch(
+                  value: _showChart,
+                  onChanged: (value){
+                    setState(() {
+                      _showChart = value;
+                    });
+                  },
+                )
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            if (!_isLandscape) Container(
+              height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top)
+               * 0.3,
+              child: Chart(_recentTransactions)
+            ),
+            if (!_isLandscape) txListWidget,
+            if (_isLandscape) _showChart ? Container(
+              height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top)
+               * 0.7,
+              child: Chart(_recentTransactions)
+            )
+            : txListWidget
           ],
         ),
       ),

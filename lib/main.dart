@@ -128,6 +128,8 @@ class _HomeAppState extends State<HomeApp> {
   @override
   Widget build(BuildContext context){
     final bool _isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final double deviceHeight = MediaQuery.of(context).size.height;
+    final double devicePaddingTop = MediaQuery.of(context).padding.top;
     final appBar = AppBar(
       title: Text('Gerenciador de Gastos'),
       actions: <Widget>[
@@ -138,10 +140,11 @@ class _HomeAppState extends State<HomeApp> {
       ],
     );
     final txListWidget = Container(
-      height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top)
+      height: (deviceHeight - appBar.preferredSize.height - devicePaddingTop)
       * 0.7,
       child: TransactionList(_userTransactions, _deleteTransaction)
     );
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
@@ -151,7 +154,8 @@ class _HomeAppState extends State<HomeApp> {
             if (_isLandscape) Row(
               children: <Widget>[
                 Text('Show Chart'),
-                Switch(
+                Switch.adaptive(
+                  activeColor: Theme.of(context).accentColor,
                   value: _showChart,
                   onChanged: (value){
                     setState(() {
@@ -163,13 +167,13 @@ class _HomeAppState extends State<HomeApp> {
               mainAxisAlignment: MainAxisAlignment.center,
             ),
             if (!_isLandscape) Container(
-              height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top)
+              height: (deviceHeight - appBar.preferredSize.height - devicePaddingTop)
                * 0.3,
               child: Chart(_recentTransactions)
             ),
             if (!_isLandscape) txListWidget,
             if (_isLandscape) _showChart ? Container(
-              height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top)
+              height: (deviceHeight - appBar.preferredSize.height - devicePaddingTop)
                * 0.7,
               child: Chart(_recentTransactions)
             )

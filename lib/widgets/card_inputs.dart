@@ -49,62 +49,69 @@ class _CardInputsState extends State<CardInputs> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-            elevation: 5,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Título'
-                    ),
-                    controller: _titleInput,
-                    keyboardType: TextInputType.text,
-                    onSubmitted: (_) => _submitData(),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Preço'
-                    ),
-                    controller: _amountInput,
-                    keyboardType: TextInputType.number,
-                    onSubmitted: (_) => _submitData(),
-                  ),
-                  Container(
-                    height: 70,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            _selectDate == null
-                              ? 'Selecione uma data!'
-                              : 'Data: ${DateFormat('dd/MM/yyyy').format(_selectDate)}'
-                          ),
-                        ),
-                        FlatButton(
-                          textColor: Theme.of(context).primaryColorDark,
-                          child: Text(
-                            'Escolha uma data.',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          onPressed: _presentDatePicker,
-                        )
-                      ],
-                    ),
-                  ),
-                  RaisedButton(
-                    child: Text('Adicionar no Orçamento'),
-                    onPressed: _submitData,
-                    textColor: Theme.of(context).textTheme.button.color,
-                    color: Theme.of(context).primaryColorDark,
-                  )
-                ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+            left: 10
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Título'
+                ),
+                controller: _titleInput,
+                keyboardType: TextInputType.text,
+                onSubmitted: (_) => _submitData(),
               ),
-            )
-          );
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Preço'
+                ),
+                controller: _amountInput,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => _submitData(),
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _selectDate == null
+                          ? 'Selecione uma data!'
+                          : 'Data: ${DateFormat('dd/MM/yyyy').format(_selectDate)}'
+                      ),
+                    ),
+                    FlatButton(
+                      textColor: Theme.of(context).primaryColorDark,
+                      child: Text(
+                        'Escolha uma data.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      onPressed: _presentDatePicker,
+                    )
+                  ],
+                ),
+              ),
+              RaisedButton(
+                child: Text('Adicionar no Orçamento'),
+                onPressed: _submitData,
+                textColor: Theme.of(context).textTheme.button.color,
+                color: Theme.of(context).primaryColorDark,
+              )
+            ],
+          ),
+        )
+      ),
+    );
   }
 }

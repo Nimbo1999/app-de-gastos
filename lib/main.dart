@@ -134,7 +134,7 @@ class _HomeAppState extends State<HomeApp> {
       title: Text('Gerenciador de Gastos'),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           onPressed: () => _showTransactionModal(context),
         )
       ],
@@ -153,7 +153,7 @@ class _HomeAppState extends State<HomeApp> {
           children: <Widget>[
             if (_isLandscape) Row(
               children: <Widget>[
-                Text('Show Chart'),
+                const Text('Show Chart'),
                 Switch.adaptive(
                   activeColor: Theme.of(context).accentColor,
                   value: _showChart,

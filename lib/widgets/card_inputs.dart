@@ -63,7 +63,7 @@ class _CardInputsState extends State<CardInputs> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Título'
                 ),
                 controller: _titleInput,
@@ -71,7 +71,7 @@ class _CardInputsState extends State<CardInputs> {
                 onSubmitted: (_) => _submitData(),
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Preço'
                 ),
                 controller: _amountInput,
@@ -91,7 +91,7 @@ class _CardInputsState extends State<CardInputs> {
                     ),
                     FlatButton(
                       textColor: Theme.of(context).primaryColorDark,
-                      child: Text(
+                      child: const Text(
                         'Escolha uma data.',
                         style: TextStyle(
                           fontWeight: FontWeight.bold
@@ -103,7 +103,7 @@ class _CardInputsState extends State<CardInputs> {
                 ),
               ),
               RaisedButton(
-                child: Text('Adicionar no Orçamento'),
+                child: const Text('Adicionar no Orçamento'),
                 onPressed: _submitData,
                 textColor: Theme.of(context).textTheme.button.color,
                 color: Theme.of(context).primaryColorDark,

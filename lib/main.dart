@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import './models/transaction.dart';
 import './widgets/transaction_list.dart';
@@ -56,19 +55,19 @@ class HomeApp extends StatefulWidget {
 
 class _HomeAppState extends State<HomeApp> {
 
-  /**
-   * Essa lista é responsável por segurar todas as transações.
-   */
+  //
+  // Essa lista é responsável por segurar todas as transações.
+  //
   final List<Transaction> _userTransactions = [];
 
-  /**
-   * Boolean que define se o card aparece ou não no dispositivo.
-   */
+  //
+  // Boolean que define se o card aparece ou não no dispositivo.
+  //
   bool _showChart = false;
 
-  /**
-   * Esse método get retorna as transações mais recente de 7 dias atraz.
-   */
+  //
+  // Esse método get retorna as transações mais recente de 7 dias atraz.
+  //
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx){
       return tx.date.isAfter(
@@ -77,14 +76,14 @@ class _HomeAppState extends State<HomeApp> {
     }).toList();
   }
 
-  /**
-   * Esse método Insere uma nova transação na minha lista de transações.
-   * Parâmetros obrigatórios:
-   * - Título da transação: Esse parâmetro se refere ao título da transação, ou
-   * qualquer outro nome que identifique a transação.
-   * - Valor da transação: Esse parâmetro representa quanto que custou essa transação.
-   * - Data da transação: Esse parâmetro representa a data dessa transação.
-   */
+  //
+  // Esse método Insere uma nova transação na minha lista de transações.
+  // Parâmetros obrigatórios:
+  // - Título da transação: Esse parâmetro se refere ao título da transação, ou
+  // qualquer outro nome que identifique a transação.
+  // - Valor da transação: Esse parâmetro representa quanto que custou essa transação.
+  // - Data da transação: Esse parâmetro representa a data dessa transação.
+  //
   void _addNewTransaction(String txTitle, double txAmount, DateTime txDate) {
     final newTx = Transaction(
       title: txTitle,
@@ -98,18 +97,18 @@ class _HomeAppState extends State<HomeApp> {
     });
   }
 
-  /**
-   * Método para deletar uma transação da lista.
-   */
+  //
+  // Método para deletar uma transação da lista.
+  //
   void _deleteTransaction(String id) {
     setState(() {
       _userTransactions.removeWhere((tx) => tx.id == id);
     });
   }
 
-  /**
-   * Método responsável por apresentar o modal da entrada de dados do usuário.
-   */
+  //
+  // Método responsável por apresentar o modal da entrada de dados do usuário.
+  //
   void _showTransactionModal(BuildContext ctx){
     showModalBottomSheet(
       context: ctx,
@@ -123,6 +122,39 @@ class _HomeAppState extends State<HomeApp> {
         );
       }
     );
+  }
+
+  List<Widget> _buildLandscapeContent(double deviceHeight, double appBarHeigth, double devicePaddingTop, Widget txListWidget) {
+    return [Row(
+      children: <Widget>[
+        const Text('Show Chart'),
+        Switch.adaptive(
+          activeColor: Theme.of(context).accentColor,
+          value: _showChart,
+          onChanged: (value){
+            setState(() {
+              _showChart = value;
+            });
+          },
+        )
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
+    ),
+    _showChart ? Container(
+      height: (deviceHeight - appBarHeigth - devicePaddingTop)
+        * 0.7,
+      child: Chart(_recentTransactions)
+    )
+    : txListWidget];
+  }
+
+  List<Widget> _buildPortraitContent(double deviceHeight, double appBarHeigth, double devicePaddingTop, Widget txListWidget) {
+    return [Container(
+      height: (deviceHeight - appBarHeigth - devicePaddingTop)
+        * 0.3,
+      child: Chart(_recentTransactions)
+    ),
+    txListWidget];
   }
 
   @override
@@ -151,33 +183,20 @@ class _HomeAppState extends State<HomeApp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (_isLandscape) Row(
-              children: <Widget>[
-                const Text('Show Chart'),
-                Switch.adaptive(
-                  activeColor: Theme.of(context).accentColor,
-                  value: _showChart,
-                  onChanged: (value){
-                    setState(() {
-                      _showChart = value;
-                    });
-                  },
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-            if (!_isLandscape) Container(
-              height: (deviceHeight - appBar.preferredSize.height - devicePaddingTop)
-               * 0.3,
-              child: Chart(_recentTransactions)
-            ),
-            if (!_isLandscape) txListWidget,
-            if (_isLandscape) _showChart ? Container(
-              height: (deviceHeight - appBar.preferredSize.height - devicePaddingTop)
-               * 0.7,
-              child: Chart(_recentTransactions)
-            )
-            : txListWidget
+            if (_isLandscape) 
+              ..._buildLandscapeContent(
+                deviceHeight,
+                appBar.preferredSize.height,
+                devicePaddingTop,
+                txListWidget
+              ),
+            if (!_isLandscape) 
+              ..._buildPortraitContent(
+                deviceHeight,
+                appBar.preferredSize.height,
+                devicePaddingTop,
+                txListWidget
+              ),
           ],
         ),
       ),

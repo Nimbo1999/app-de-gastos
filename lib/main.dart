@@ -53,7 +53,7 @@ class HomeApp extends StatefulWidget {
   _HomeAppState createState() => _HomeAppState();
 }
 
-class _HomeAppState extends State<HomeApp> {
+class _HomeAppState extends State<HomeApp> with WidgetsBindingObserver {
 
   //
   // Essa lista é responsável por segurar todas as transações.
@@ -64,6 +64,23 @@ class _HomeAppState extends State<HomeApp> {
   // Boolean que define se o card aparece ou não no dispositivo.
   //
   bool _showChart = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
 
   //
   // Esse método get retorna as transações mais recente de 7 dias atraz.
@@ -162,6 +179,7 @@ class _HomeAppState extends State<HomeApp> {
     final bool _isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     final double deviceHeight = MediaQuery.of(context).size.height;
     final double devicePaddingTop = MediaQuery.of(context).padding.top;
+
     final appBar = AppBar(
       title: Text('Gerenciador de Gastos'),
       actions: <Widget>[
@@ -171,6 +189,7 @@ class _HomeAppState extends State<HomeApp> {
         )
       ],
     );
+
     final txListWidget = Container(
       height: (deviceHeight - appBar.preferredSize.height - devicePaddingTop)
       * 0.7,

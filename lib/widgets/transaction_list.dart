@@ -28,15 +28,25 @@ class TransactionList extends StatelessWidget {
         )
       ],);
     },)
-    : ListView.builder(
-      itemBuilder: (context, index) {
-        return TransactionItem(
-          transaction: transactions[index],
+    : 
+      ListView(
+        children: transactions
+        .map((tx) => TransactionItem(
+          key: ValueKey(tx.id),
+          transaction: tx,
+          deletarTransacao: deletarTransacao,
           mediaQuery: mediaQuery,
-          deletarTransacao: deletarTransacao
-        );
-      },
-      itemCount: transactions.length,
-    );
+        )).toList(),
+      );
+    // ListView.builder(
+    //   itemBuilder: (context, index) {
+    //     return TransactionItem(
+    //       transaction: transactions[index],
+    //       mediaQuery: mediaQuery,
+    //       deletarTransacao: deletarTransacao
+    //     );
+    //   },
+    //   itemCount: transactions.length,
+    // );
   }
 }
